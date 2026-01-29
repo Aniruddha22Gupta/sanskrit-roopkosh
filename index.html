@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>संस्कृत रूपकोष</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Aniruddha22Gupta/Aniruddha22Gupta/0ab97510de4bf75e7ae78fb89a95c323e565dc17/icon.png">
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #e8f9f0);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      max-width: 1000px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 { font-size: 26px; margin-bottom: 20px; color: #2c3e50; }
+    label { display: block; font-size: 18px; margin-top: 15px; margin-bottom: 5px; color: #34495e; }
+    input, select {
+      width: 90%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #bdc3c7;
+      font-size: 16px;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .toggle input[type="checkbox"] { width: 12px; height: 12px; margin: 0; }
+    .toggle label { cursor: pointer; margin-top: 7px; }
+
+    .hidden { display: none; }
+
+    .table-container {
+      max-width: 900px;
+      margin: 30px auto;
+      overflow-x: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+    th { background: #3498db; color: white; }
+
+    .source-link {
+      margin-top: 5px;
+      display: block;
+      font-size: 14px;
+    }
+
+    button { margin: 20px; border-radius: 10px; cursor: pointer; }
+    .normal-button {
+      width: 90%;
+      font-size: 16px;
+      padding: 12px;
+      border: 1px solid #3498db;
+      background-color: #3498db;
+      color: white;
+    }
+
+    .normal-button:hover { background-color: #0084dc; }
+
+    .float-button {
+      position: fixed;
+      border-radius: 50%;
+      font-size: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #top-button {
+      display: none;
+      bottom: 75px;
+      left: 20px;
+      width: 75px;
+      height: 75px;
+      border: 1px solid #3498db;
+      background-color: #3498db;
+    }
+    #about-button {
+      bottom: 75px;
+      right: 20px;
+      width: 75px;
+      height: 75px;
+      border: 1px solid #3498db;
+      background-color: #3498db;
+    }
+
+    i { color: #f0f4ff; }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      animation: spin 1s linear infinite;
+      margin: 15px auto;
+    }
+
+    .about-box {
+      display: none;
+      width: 50%;
+      max-width: 500px;
+      height: 70%;
+      max-height: 500px;
+      padding: 25px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      overflow-y: auto;
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .about-box h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      color: #2c3e50;
+    }
+    .about-box p {
+      font-size: 0.95rem;
+      color: #333;
+      line-height: 1.4;
+    }
+    .about-box a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    .about-box a:hover {
+      text-decoration: underline;
+    }
+
+    .about-video {
+      width: 100%;
+      aspect-ratio: 500/360;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 72%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+      
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      border: none;
+      background: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #555;
+      transition: color 0.2s ease;
+    }
+    .close-btn:hover { color: #000; }
+
+    @media (max-width: 768px) {
+      .about-box {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        max-width: none;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: #fff;
+        padding: 24px;
+        padding-right: 100px;
+      }
+      .video-container {
+        width: 92%;
+        height: auto;
+        padding-bottom: 72%;
+      }
+      .close-btn {
+        right: 150px;
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>संस्कृत रूपकोष</h1>
+    <h3 style="text-align: end; margin-right: 100px;">Made by Aniruddha Gupta</h3>
+
+    <div class="toggle">
+      <input type="checkbox" id="toggleWord">
+      <label for="toggleWord">क्या ये शब्द रूप है?</label>
+    </div>
+
+    <label id="textboxLabel" for="rootWord">धातु का मूल रूप</label>
+    <input type="text" id="rootWord" placeholder="यहाँ दर्ज करें देवनागरी में">
+
+    <div id="shabdTypeSection" class="hidden">
+      <label for="shabdType">शब्द प्रकार चुनें</label>
+      <select id="shabdType">
+        <option value="noun">संज्ञा (Noun)</option>
+        <option value="pronoun">सर्वनाम (Pronoun)</option>
+      </select>
+    </div>
+
+    <div id="lakaraSection">
+      <label for="lakara">धातु के लकार का चयन करें</label>
+      <select id="lakara">
+        <option>लट् लकार</option>
+        <option>लिट् लकार</option>
+        <option>लुट् लकार</option>
+        <option>लृट् लकार</option>
+        <option>लोट् लकार</option>
+        <option>लङ् लकार</option>
+        <option>विधिलिङ् लकार</option>
+        <option>आशीर्लिङ् लकार</option>
+        <option>लुङ् लकार</option>
+        <option>लृङ् लकार</option>
+        <option>All</option>
+      </select>
+    </div>
+
+    <button class="normal-button" onclick="openTable()">तालिका दिखाएँ</button>
+
+    <div class="table-container" id="tableResult">👉 यहाँ तालिका दिखेगी...</div>
+  </div>
+
+  <!-- Floating Buttons -->
+  <button class="float-button" id="top-button"
+    onclick="document.body.scrollTop = 0; document.documentElement.scrollTop = 0;">
+    <i class="material-icons" style="font-size: 36px;">keyboard_arrow_up</i>
+  </button>
+
+  <button class="float-button" id="about-button"
+    onclick="document.getElementById('about-box').style.display='block'">
+    <i class="material-icons" style="font-size: 36px;">info</i>
+  </button>
+
+  <!-- About Box -->
+  <div class="about-box" id="about-box">
+    <button class="close-btn" onclick="document.getElementById('about-box').style.display='none'">✕</button>
+    <h2>About संस्कृत रूपकोष</h2>
+    <p>
+      This tool is made by <strong>Aniruddha Gupta</strong> (अनिरुद्ध गुप्ता).<br>
+      Powered by <a href="https://sanskritabhyas.in/hi" target="_blank">SanskritAbhyas</a>.
+    </p>
+    <div class="video-container">
+      <iframe
+        src="https://www.youtube.com/embed/lyZhgMm9KIo"
+        title="शब्द रूप और धातु रूपों को तुरंत खोलें"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <script>
+    const toggleWord = document.getElementById("toggleWord");
+    const textboxLabel = document.getElementById("textboxLabel");
+    const lakaraSection = document.getElementById("lakaraSection");
+    const shabdTypeSection = document.getElementById("shabdTypeSection");
+    const scrollToTopButton = document.getElementById("top-button");
+
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 100) {
+        scrollToTopButton.style.display = 'block';
+      } else {
+        scrollToTopButton.style.display = 'none';
+      }
+    });
+
+    toggleWord.addEventListener("change", () => {
+      if (toggleWord.checked) {
+        textboxLabel.textContent = "शब्द का मूल रूप";
+        lakaraSection.classList.add("hidden");
+        shabdTypeSection.classList.remove("hidden");
+      } else {
+        textboxLabel.textContent = "धातु का मूल रूप";
+        lakaraSection.classList.remove("hidden");
+        shabdTypeSection.classList.add("hidden");
+      }
+    });
+
+    async function openTable() {
+      const word = document.getElementById("rootWord").value.trim();
+      if (!word) return alert("कृपया शब्द/धातु दर्ज करें");
+
+      const isShabd = toggleWord.checked;
+      const tableContainer = document.getElementById("tableResult");
+      tableContainer.innerHTML = "";
+
+      const fetchTable = async (url, heading = null) => {
+        const loader = document.createElement("div");
+        loader.className = "loader";
+        tableContainer.appendChild(loader);
+
+        try {
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+          const res = await fetch(proxyUrl);
+          const data = await res.json();
+          const doc = new DOMParser().parseFromString(data.contents, "text/html");
+          const tableDiv = doc.querySelector(isShabd ? "#divFullAnswer" : ".divFullAnswerxs.col-12.d-lg-none");
+
+          loader.remove();
+
+          if (!tableDiv) {
+            const p = document.createElement("p");
+            p.textContent = heading ? `${heading} - कोई तालिका नहीं मिली` : "कोई तालिका नहीं मिली";
+            tableContainer.appendChild(p);
+            return;
+          }
+
+          if (heading) {
+            const h = document.createElement("h3");
+            h.textContent = heading;
+            tableContainer.appendChild(h);
+          }
+          const table = document.createElement("table");
+          const tbody = document.createElement("tbody");
+          table.appendChild(tbody);
+
+          let sambodhanRow = null;
+          const rows = [];
+
+          tableDiv.querySelectorAll(":scope > div").forEach(rowDiv => {
+            const tr = document.createElement("tr");
+            Array.from(rowDiv.children).forEach(cell => {
+              const td = document.createElement("td");
+              td.textContent = cell.textContent.trim();
+              tr.appendChild(td);
+            });
+            
+            if (tr.firstChild && tr.firstChild.textContent.includes('संबोधन')) {
+              sambodhanRow = tr;
+            } else {
+              rows.push(tr);
+            }
+          });
+
+          rows.forEach(tr => tbody.appendChild(tr));
+
+          if (sambodhanRow) {
+            tbody.appendChild(sambodhanRow);
+          }
+
+          tableContainer.appendChild(table);
+
+          const sourceLink = document.createElement("a");
+          sourceLink.href = url;
+          sourceLink.target = "_blank";
+          sourceLink.textContent = "🔗 मूल साइट पर देखें";
+          sourceLink.className = "source-link";
+          tableContainer.appendChild(sourceLink);
+
+        } catch (err) {
+          loader.remove();
+          const p = document.createElement("p");
+          p.style.color = "red";
+          p.textContent = heading ? `${heading} - ❌ डेटा प्राप्त करने में त्रुटि` : "❌ डेटा प्राप्त करने में त्रुटि";
+          tableContainer.appendChild(p);
+
+          const sourceLink = document.createElement("a");
+          sourceLink.href = url;
+          sourceLink.target = "_blank";
+          sourceLink.textContent = "🔗 मूल साइट पर देखें";
+          sourceLink.className = "source-link";
+          tableContainer.appendChild(sourceLink);
+          console.error(err);
+        }
+      };
+
+      if (isShabd) {
+        const shabdType = document.getElementById("shabdType").value;
+        const url = shabdType === "noun"
+          ? `https://sanskritabhyas.in/hi/Noun/View/${word}`
+          : `https://sanskritabhyas.in/hi/Pronoun/View/${word}`;
+        await fetchTable(url, shabdType === "noun" ? "संज्ञा" : "सर्वनाम");
+      } else {
+        const lakaraSelect = document.getElementById("lakara").value;
+        if (lakaraSelect === "All") {
+          const allLakara = ["लट्","लिट्","लुट्","लृट्","लोट्","लङ्","विधिलिङ्","आशीर्लिङ्","लुङ्","लृङ्"];
+          for (const l of allLakara) {
+            const url = `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`;
+            await fetchTable(url, l);
+          }
+        } else {
+          const l = lakaraSelect.split(" ")[0];
+          const url = `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`;
+          await fetchTable(url, l);
+        }
+      }
+    }
+  </script>
+
+  
+</body>
+</html>
