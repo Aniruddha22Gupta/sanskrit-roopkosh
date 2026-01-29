@@ -388,6 +388,14 @@
             });
             
             if (tr.firstChild && tr.firstChild.textContent.includes('संबोधन')) {
+              Array.from(tr.children).forEach((td, index) => {
+                if (index > 0) {
+                  const text = td.textContent.trim();
+                  if (text) {
+                    td.textContent = `हे ${text}!`;
+                  }
+                }
+              });
               sambodhanRow = tr;
             } else {
               rows.push(tr);
