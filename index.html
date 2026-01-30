@@ -249,7 +249,7 @@
     </div>
 
     <label id="textboxLabel" for="rootWord">धातु का मूल रूप</label>
-    <input type="text" id="rootWord" placeholder="यहाँ दर्ज करें देवनागरी में">
+    <input type="text" id="rootWord" placeholder="यहाँ दर्ज करें देवनागरी में (कोई भी आमतौर पर जाना/वैध डालें)">
 
     <div id="shabdTypeSection" class="hidden">
       <label for="shabdType">शब्द प्रकार चुनें</label>
@@ -263,16 +263,16 @@
       <label for="lakara">धातु के लकार का चयन करें</label>
       <select id="lakara">
         <option>लट् लकार</option>
+        <option>लृट् लकार</option>
+        <option>लङ् लकार</option>
+        <option>लोट् लकार</option>
+        <option>विधिलिङ् लकार</option>
         <option>लिट् लकार</option>
         <option>लुट् लकार</option>
-        <option>लृट् लकार</option>
-        <option>लोट् लकार</option>
-        <option>लङ् लकार</option>
-        <option>विधिलिङ् लकार</option>
         <option>आशीर्लिङ् लकार</option>
         <option>लुङ् लकार</option>
         <option>लृङ् लकार</option>
-        <option>All</option>
+        <option>All Class 9 & 10 NCERT</option>
       </select>
     </div>
 
@@ -303,7 +303,7 @@
     <div class="video-container">
       <iframe
         src="https://www.youtube.com/embed/lyZhgMm9KIo"
-        title="शब्द रूप और धातु रूपों को तुरंत खोलें"
+        title="कोई भी शब्द रूप या धातु रूपों को तुरंत खोलें"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen>
@@ -442,8 +442,8 @@
         await fetchTable(url, shabdType === "noun" ? "संज्ञा" : "सर्वनाम");
       } else {
         const lakaraSelect = document.getElementById("lakara").value;
-        if (lakaraSelect === "All") {
-          const allLakara = ["लट्","लिट्","लुट्","लृट्","लोट्","लङ्","विधिलिङ्","आशीर्लिङ्","लुङ्","लृङ्"];
+        if (lakaraSelect === "All Class 9 & 10 NCERT") {
+          const allLakara = ["लट्","लृट्","लङ्","लोट्","विधिलिङ्"];
           for (const l of allLakara) {
             const url = `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`;
             await fetchTable(url, l);
@@ -456,7 +456,5 @@
       }
     }
   </script>
-
-  
 </body>
 </html>
