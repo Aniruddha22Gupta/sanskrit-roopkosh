@@ -317,6 +317,7 @@
     const lakaraSection = document.getElementById("lakaraSection");
     const shabdTypeSection = document.getElementById("shabdTypeSection");
     const scrollToTopButton = document.getElementById("top-button");
+    let dhatuValidated = false;
 
     window.addEventListener('scroll', function() {
       if (window.pageYOffset > 100) {
@@ -419,18 +420,23 @@
 
         } catch (err) {
           loader.remove();
-          const p = document.createElement("p");
-          p.style.color = "red";
-          p.textContent = heading ? `${heading} - ❌ डेटा प्राप्त करने में त्रुटि` : "❌ डेटा प्राप्त करने में त्रुटि";
-          tableContainer.appendChild(p);
 
-          const sourceLink = document.createElement("a");
-          sourceLink.href = url;
-          sourceLink.target = "_blank";
-          sourceLink.textContent = "🔗 मूल साइट पर देखें";
-          sourceLink.className = "source-link";
-          tableContainer.appendChild(sourceLink);
-          console.error(err);
+          if (!dhatuValidated && !silentFail) {
+            const p = document.createElement("p");
+            p.style.color = "red";
+            p.textContent = heading
+              ? `${heading} - ❌ डेटा प्राप्त करने में त्रुटि`
+              : "❌ डेटा प्राप्त करने में त्रुटि";
+            tableContainer.appendChild(p);
+
+            const sourceLink = document.createElement("a");
+            sourceLink.href = url;
+            sourceLink.target = "_blank";
+            sourceLink.textContent = "🔗 मूल साइट पर देखें";
+            sourceLink.className = "source-link";
+            tableContainer.appendChild(sourceLink);
+            console.error(err);
+          }
         }
       };
 
@@ -459,6 +465,10 @@
         
             const after = tableContainer.children.length;
             latDone = after > before;
+            
+            if (latDone) {
+              dhatuValidated = true;
+            }
           }
         
           for (const l of otherLakara) {
