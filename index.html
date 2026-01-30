@@ -372,8 +372,7 @@
             const h = document.createElement("h3");
           
             if (meta.type === "shabd") {
-              const label = meta.shabdType === "noun" ? "संज्ञा" : "सर्वनाम";
-              h.textContent = `${meta.word} (${label})`;
+              h.textContent = `${meta.word}`;
             }
           
             if (meta.type === "dhatu") {
