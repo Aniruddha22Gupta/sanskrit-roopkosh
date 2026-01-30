@@ -347,7 +347,7 @@
       const tableContainer = document.getElementById("tableResult");
       tableContainer.innerHTML = "";
 
-      const fetchTable = async (url, heading = null) => {
+      const fetchTable = async (url, meta = null, silentFail = false) => {
         const loader = document.createElement("div");
         loader.className = "loader";
         tableContainer.appendChild(loader);
@@ -363,16 +363,26 @@
 
           if (!tableDiv) {
             const p = document.createElement("p");
-            p.textContent = heading ? `${heading} - कोई तालिका नहीं मिली` : "कोई तालिका नहीं मिली";
+            p.textContent = "कोई तालिका नहीं मिली";
             tableContainer.appendChild(p);
             return;
           }
 
-          if (heading) {
+          if (meta) {
             const h = document.createElement("h3");
-            h.textContent = heading;
+          
+            if (meta.type === "shabd") {
+              const label = meta.shabdType === "noun" ? "संज्ञा" : "सर्वनाम";
+              h.textContent = `${meta.word} (${label})`;
+            }
+          
+            if (meta.type === "dhatu") {
+              h.textContent = `${meta.dhatu} — ${meta.lakara}`;
+            }
+          
             tableContainer.appendChild(h);
           }
+
           const table = document.createElement("table");
           const tbody = document.createElement("tbody");
           table.appendChild(tbody);
@@ -424,9 +434,7 @@
           if (!dhatuValidated && !silentFail) {
             const p = document.createElement("p");
             p.style.color = "red";
-            p.textContent = heading
-              ? `${heading} - ❌ डेटा प्राप्त करने में त्रुटि`
-              : "❌ डेटा प्राप्त करने में त्रुटि";
+            p.textContent = "❌ डेटा प्राप्त करने में त्रुटि";
             tableContainer.appendChild(p);
 
             const sourceLink = document.createElement("a");
@@ -445,7 +453,11 @@
         const url = shabdType === "noun"
           ? `https://sanskritabhyas.in/hi/Noun/View/${word}`
           : `https://sanskritabhyas.in/hi/Pronoun/View/${word}`;
-        await fetchTable(url, shabdType === "noun" ? "संज्ञा" : "सर्वनाम");
+        await fetchTable(url, {
+          type: "shabd",
+          word,
+          shabdType
+        });
       } else {
         const lakaraSelect = document.getElementById("lakara").value;
         if (lakaraSelect === "All Class 9 & 10 NCERT") {
@@ -460,8 +472,13 @@
         
             await fetchTable(
               `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${mainLakara}`,
-              mainLakara
+              {
+                type: "dhatu",
+                dhatu: word,
+                lakara: mainLakara
+              }
             );
+
         
             const after = tableContainer.children.length;
             latDone = after > before;
@@ -479,8 +496,12 @@
         
               await fetchTable(
                 `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`,
-                l,
-                true 
+                {
+                  type: "dhatu",
+                  dhatu: word,
+                  lakara: l
+                },
+                true
               );
         
               const after = tableContainer.children.length;
@@ -490,7 +511,11 @@
         } else {
           const l = lakaraSelect.split(" ")[0];
           const url = `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`;
-          await fetchTable(url, l);
+          await fetchTable(url, {
+            type: "dhatu",
+            dhatu: word,
+            lakara: l
+          });
         }
       }
     }
