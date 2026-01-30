@@ -443,9 +443,25 @@
       } else {
         const lakaraSelect = document.getElementById("lakara").value;
         if (lakaraSelect === "All Class 9 & 10 NCERT") {
-          const allLakara = ["लट्", "लृट्", "लङ्", "लोट्", "विधिलिङ्"];
+          const mainLakara = "लट्";
+          const otherLakara = ["लृट्", "लङ्", "लोट्", "विधिलिङ्"];
         
-          for (const l of allLakara) {
+          tableContainer.innerHTML = "";
+        
+          let latDone = false;
+          while (!latDone) {
+            const before = tableContainer.children.length;
+        
+            await fetchTable(
+              `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${mainLakara}`,
+              mainLakara
+            );
+        
+            const after = tableContainer.children.length;
+            latDone = after > before;
+          }
+        
+          for (const l of otherLakara) {
             let done = false;
         
             while (!done) {
@@ -454,11 +470,11 @@
               await fetchTable(
                 `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`,
                 l,
-                true
+                true 
               );
         
               const after = tableContainer.children.length;
-              done = after > before; // rendered exactly once
+              done = after > before;
             }
           }
         } else {
