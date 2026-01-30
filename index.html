@@ -133,23 +133,39 @@
       max-width: 500px;
       height: 70%;
       max-height: 500px;
-      padding: 25px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 12px;
       position: fixed;
       bottom: 100px;
       right: 20px;
-      font-family: Arial, sans-serif;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      overflow-y: auto;
-      transition: all 0.3s ease;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      overflow: hidden; /* critical */
       z-index: 9999;
     }
-    .about-box h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-      color: #2c3e50;
+
+    .about-header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, #3498db, #6dd5fa);
+      color: white;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    
+    .about-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .about-content {
+      padding: 18px;
+      overflow-y: auto;
+      height: calc(100% - 56px);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #333;
     }
     .about-box p {
       font-size: 0.95rem;
@@ -192,34 +208,30 @@
     }
       
     .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 12px;
+      background: linear-gradient(135deg, #ff6a6a, #ff3b3b);
       border: none;
-      background: none;
-      font-size: 28px;
+      color: white;
+      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       cursor: pointer;
-      color: #555;
-      transition: color 0.2s ease;
     }
-    .close-btn:hover { color: #000; }
+    
+    .close-btn:hover {
+      filter: brightness(1.1);
+    }  
 
     @media (max-width: 768px) {
       .about-box {
         width: 100%;
         height: 100%;
-        max-height: none;
         max-width: none;
-        bottom: 0;
-        right: 0;
-        left: 0;
+        max-height: none;
         top: 0;
+        right: 0;
+        bottom: 0;
         border-radius: 0;
-        border: none;
-        box-shadow: none;
-        background: #fff;
-        padding: 24px;
-        padding-right: 100px;
       }
       .video-container {
         width: 92%;
@@ -294,25 +306,41 @@
 
   <!-- About Box -->
   <div class="about-box" id="about-box">
-    <button class="close-btn" onclick="document.getElementById('about-box').style.display='none'">✕</button>
+  
+  <!-- Header -->
+  <div class="about-header">
     <h2>About संस्कृत रूपकोष</h2>
+    <button class="close-btn" onclick="document.getElementById('about-box').style.display='none'">✕</button>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="about-content">
     <p>
       This tool is made by <strong>Aniruddha Gupta</strong> (अनिरुद्ध गुप्ता).<br>
-      Powered by <a href="https://sanskritabhyas.in/hi" target="_blank">SanskritAbhyas</a>.<br>
-      <em>This website helps you <strong>look up Sanskrit word forms automatically</strong>. When you type a word, the site sends requests to <strong>sanskritabhyas.in</strong> to check what kind of word it is. If it’s a <strong>noun or pronoun</strong>, it fetches and shows the correct <strong>शब्द-रूप tables</strong>. If it’s a <strong>verb root (धातु)</strong>, it tries different <strong>लकार (tenses)</strong> and displays the ones that exist. <br><br>
-All of this happens <strong>in the browser</strong>, step by step, without reloading the page, so the results appear dynamically as the site receives valid data.</em>
-
+      Powered by <a href="https://sanskritabhyas.in/hi" target="_blank">SanskritAbhyas</a>.
     </p>
+
+    <hr>
+
+    <p>
+      <em>
+        This website helps you <strong>look up Sanskrit word forms automatically</strong>.
+        It detects whether a word is a noun, pronoun, or verb root (धातु), then fetches
+        the correct रूप tables dynamically — all inside the browser.
+      </em>
+    </p>
+
     <div class="video-container">
       <iframe
         src="https://www.youtube.com/embed/lyZhgMm9KIo"
-        title="कोई भी शब्द रूप या धातु रूपों को तुरंत खोलें"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
+        title="संस्कृत रूपकोष demo"
         allowfullscreen>
       </iframe>
     </div>
   </div>
+
+</div>
+
 
   <script>
     const toggleWord = document.getElementById("toggleWord");
