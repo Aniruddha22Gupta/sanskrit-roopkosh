@@ -446,15 +446,19 @@
           const allLakara = ["लट्", "लृट्", "लङ्", "लोट्", "विधिलिङ्"];
         
           for (const l of allLakara) {
-            let success = false;
+            let done = false;
         
-            while (!success) {
-              const url = `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`;
-              success = await fetchTable(url, l, true);
+            while (!done) {
+              const before = tableContainer.children.length;
         
-              if (!success) {
-                await new Promise(r => setTimeout(r, 800));
-              }
+              await fetchTable(
+                `https://sanskritabhyas.in/hi/Verb/View/${word}/All/${l}`,
+                l,
+                true
+              );
+        
+              const after = tableContainer.children.length;
+              done = after > before; // rendered exactly once
             }
           }
         } else {
