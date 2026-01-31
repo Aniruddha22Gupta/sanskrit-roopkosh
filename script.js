@@ -33,6 +33,65 @@ async function openTable() {
   const tableContainer = document.getElementById("tableResult");
   tableContainer.innerHTML = "";
 
+  function renderTableFromDiv(tableDiv, meta, tableContainer, sourceUrl, isPredicted = false) {
+    if (meta) {
+      const h = document.createElement("h3");
+      if (meta.type === "shabd") {
+        h.textContent = `${meta.word}`;
+      }
+      if (meta.type === "dhatu") {
+        h.textContent = `${meta.dhatu} — ${meta.lakara}`;
+      }
+      tableContainer.appendChild(h);
+    }
+    const table = document.createElement("table");
+    const tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+    let sambodhanRow = null;
+    const rows = [];
+    tableDiv.querySelectorAll(":scope > div").forEach(rowDiv => {
+      const tr = document.createElement("tr");
+      Array.from(rowDiv.children).forEach(cell => {
+        const td = document.createElement("td");
+        td.textContent = cell.textContent.trim();
+        tr.appendChild(td);
+      });
+      if (tr.firstChild && tr.firstChild.textContent.includes('संबोधन')) {
+        Array.from(tr.children).forEach((td, index) => {
+          if (index > 0) {
+            const text = td.textContent.trim();
+            if (text) {
+              td.textContent = `हे ${text}!`;
+            }
+          }
+        });
+        sambodhanRow = tr;
+      } else {
+        rows.push(tr);
+      }
+    });
+    rows.forEach(tr => tbody.appendChild(tr));
+    if (sambodhanRow) {
+      tbody.appendChild(sambodhanRow);
+    }
+    tableContainer.appendChild(table);
+    const sourceLink = document.createElement("a");
+    sourceLink.href = sourceUrl;
+    sourceLink.target = "_blank";
+    sourceLink.textContent = "🔗 मूल साइट पर देखें";
+    sourceLink.className = "source-link";
+    tableContainer.appendChild(sourceLink);
+
+    // Show warning if predicted
+    if (isPredicted) {
+      const warn = document.createElement("div");
+      warn.innerHTML = '⚠️ Predicted by <a href="https://sanskritabhyas.in/en" target="_blank">SanskritAbhyas</a>';
+      warn.style.color = "orange";
+      warn.style.marginTop = "8px";
+      tableContainer.appendChild(warn);
+    }
+  }
+
   const fetchTable = async (url, meta = null, silentFail = false) => {
     const loader = document.createElement("div");
     loader.className = "loader";
@@ -48,70 +107,30 @@ async function openTable() {
       loader.remove();
 
       if (!tableDiv) {
+        // Try prediction endpoint for shabd roop (noun/pronoun)
+        if (isShabd) {
+          try {
+            const predUrl = `https://sanskritabhyas.in/hi/Noun/Prediction/${word}`;
+            const proxyPredUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(predUrl)}`;
+            const predRes = await fetch(proxyPredUrl);
+            const predData = await predRes.json();
+            const predDoc = new DOMParser().parseFromString(predData.contents, "text/html");
+            const predTableDiv = predDoc.querySelector("#divFullAnswer");
+            if (predTableDiv) {
+              renderTableFromDiv(predTableDiv, meta, tableContainer, predUrl, true); // pass true for isPredicted
+              return;
+            }
+          } catch (e) {
+            // ignore and show not found below
+          }
+        }
         const p = document.createElement("p");
         p.textContent = "कोई तालिका नहीं मिली";
         tableContainer.appendChild(p);
         return;
       }
 
-      if (meta) {
-        const h = document.createElement("h3");
-      
-        if (meta.type === "shabd") {
-          h.textContent = `${meta.word}`;
-        }
-      
-        if (meta.type === "dhatu") {
-          h.textContent = `${meta.dhatu} — ${meta.lakara}`;
-        }
-      
-        tableContainer.appendChild(h);
-      }
-
-      const table = document.createElement("table");
-      const tbody = document.createElement("tbody");
-      table.appendChild(tbody);
-
-      let sambodhanRow = null;
-      const rows = [];
-
-      tableDiv.querySelectorAll(":scope > div").forEach(rowDiv => {
-        const tr = document.createElement("tr");
-        Array.from(rowDiv.children).forEach(cell => {
-          const td = document.createElement("td");
-          td.textContent = cell.textContent.trim();
-          tr.appendChild(td);
-        });
-        
-        if (tr.firstChild && tr.firstChild.textContent.includes('संबोधन')) {
-          Array.from(tr.children).forEach((td, index) => {
-            if (index > 0) {
-              const text = td.textContent.trim();
-              if (text) {
-                td.textContent = `हे ${text}!`;
-              }
-            }
-          });
-          sambodhanRow = tr;
-        } else {
-          rows.push(tr);
-        }
-      });
-
-      rows.forEach(tr => tbody.appendChild(tr));
-
-      if (sambodhanRow) {
-        tbody.appendChild(sambodhanRow);
-      }
-
-      tableContainer.appendChild(table);
-
-      const sourceLink = document.createElement("a");
-      sourceLink.href = url;
-      sourceLink.target = "_blank";
-      sourceLink.textContent = "🔗 मूल साइट पर देखें";
-      sourceLink.className = "source-link";
-      tableContainer.appendChild(sourceLink);
+      renderTableFromDiv(tableDiv, meta, tableContainer, url);
 
     } catch (err) {
       loader.remove();
