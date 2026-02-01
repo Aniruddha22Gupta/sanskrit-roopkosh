@@ -26,8 +26,10 @@ toggleWord.addEventListener("change", () => {
 });
 
 async function openTable() {
-  const word = document.getElementById("rootWord").value.trim();
+  let word = document.getElementById("rootWord").value.trim();
   if (!word) return alert("कृपया शब्द/धातु दर्ज करें");
+
+  word = word.replace(/ /g, "_");
 
   const isShabd = toggleWord.checked;
   const tableContainer = document.getElementById("tableResult");
@@ -37,10 +39,10 @@ async function openTable() {
     if (meta) {
       const h = document.createElement("h3");
       if (meta.type === "shabd") {
-        h.textContent = `${meta.word}`;
+        h.textContent = `${meta.word.replace(/_/g, " ")}`;
       }
       if (meta.type === "dhatu") {
-        h.textContent = `${meta.dhatu} — ${meta.lakara}`;
+        h.textContent = `${meta.dhatu.replace(/_/g, " ")} — ${meta.lakara}`;
       }
       tableContainer.appendChild(h);
     }
@@ -53,7 +55,7 @@ async function openTable() {
       const tr = document.createElement("tr");
       Array.from(rowDiv.children).forEach(cell => {
         const td = document.createElement("td");
-        td.textContent = cell.textContent.trim();
+        td.textContent = cell.textContent.trim().replace(/_/g, " ");
         tr.appendChild(td);
       });
       if (tr.firstChild && tr.firstChild.textContent.includes('संबोधन')) {
@@ -82,7 +84,6 @@ async function openTable() {
     sourceLink.className = "source-link";
     tableContainer.appendChild(sourceLink);
 
-    // Show warning if predicted
     if (isPredicted) {
       const warn = document.createElement("div");
       warn.innerHTML = '⚠️ Predicted by <a href="https://sanskritabhyas.in/en" target="_blank">SanskritAbhyas</a>';
