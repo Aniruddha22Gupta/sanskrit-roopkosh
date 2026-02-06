@@ -1,3 +1,57 @@
+// --- Loader overlay for Aksharamukha warmup ---
+function showGlobalLoader() {
+  let loader = document.getElementById('global-aksharamukha-loader');
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.id = 'global-aksharamukha-loader';
+    loader.style.position = 'fixed';
+    loader.style.top = 0;
+    loader.style.left = 0;
+    loader.style.width = '100vw';
+    loader.style.height = '100vh';
+    loader.style.background = 'rgba(255,255,255,0.85)';
+    loader.style.zIndex = 99999;
+    loader.style.display = 'flex';
+    loader.style.alignItems = 'center';
+    loader.style.justifyContent = 'center';
+    loader.innerHTML = '<div class="loader" style="width:48px;height:48px;border-width:6px;"></div>';
+    document.body.appendChild(loader);
+  }
+  loader.style.display = 'flex';
+}
+function hideGlobalLoader() {
+  const loader = document.getElementById('global-aksharamukha-loader');
+  if (loader) loader.style.display = 'none';
+}
+
+showGlobalLoader();
+// Warm up Aksharamukha API at startup, show loader until done
+(async function warmupAksharamukha() {
+  let supported = true;
+  try {
+    let tries = 0;
+    while (typeof window.Aksharamukha === 'undefined' && tries < 100) {
+      await new Promise(r => setTimeout(r, 50));
+      tries++;
+    }
+    if (typeof window.Aksharamukha !== 'undefined') {
+      try {
+        window.aksharamukhaInstance = await window.Aksharamukha.new();
+        window.aksharamukhaReady = true;
+        const output = await window.aksharamukhaInstance.process('autodetect', 'Devanagari', 'aniruddha');
+        console.log('Aksharamukha warmup:', output);
+      } catch (err) {
+        supported = false;
+      }
+    } else {
+      supported = false;
+    }
+  } catch (e) {
+    supported = false;
+  }
+  hideGlobalLoader();
+})();
+
 const toggleWord = document.getElementById("toggleWord");
 const textboxLabel = document.getElementById("textboxLabel");
 const lakaraSection = document.getElementById("lakaraSection");
@@ -26,8 +80,72 @@ toggleWord.addEventListener("change", () => {
 });
 
 async function openTable() {
-  let word = document.getElementById("rootWord").value.trim();
+  const rootInput = document.getElementById("rootWord");
+  let word = rootInput.value.trim();
   if (!word) return alert("कृपया शब्द/धातु दर्ज करें");
+
+  // Loader logic
+  let showTableBtn = document.querySelector('button.normal-button');
+  let translitBtn = document.getElementById('transliterateBtn');
+  let loader = document.querySelector('.loader-aksharamukha');
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.className = 'loader loader-aksharamukha';
+    loader.style.display = 'none';
+    if (showTableBtn) showTableBtn.parentNode.insertBefore(loader, showTableBtn.nextSibling);
+  }
+
+  // Only transliterate if not already Devanagari
+  if (!(/[\u0900-\u097F]/.test(word))) {
+    if (showTableBtn) showTableBtn.disabled = true;
+    if (translitBtn) translitBtn.disabled = true;
+    loader.style.display = 'inline-block';
+    try {
+      while (!window.aksharamukhaReady) await new Promise(r => setTimeout(r, 30));
+      const output = await window.aksharamukhaInstance.process('autodetect', 'Devanagari', word);
+      rootInput.value = output;
+      word = output;
+    } catch (err) {
+      
+    }
+    loader.style.display = 'none';
+    if (showTableBtn) showTableBtn.disabled = false;
+    if (translitBtn) translitBtn.disabled = false;
+  }
+// Ensure transliterate button uses the same Aksharamukha instance
+window.addEventListener('DOMContentLoaded', () => {
+  const rootInput = document.getElementById('rootWord');
+  const translitBtn = document.getElementById('transliterateBtn');
+  const showTableBtn = document.querySelector('button.normal-button');
+  let loader = document.querySelector('.loader-aksharamukha');
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.className = 'loader loader-aksharamukha';
+    loader.style.display = 'none';
+    if (showTableBtn) showTableBtn.parentNode.insertBefore(loader, showTableBtn.nextSibling);
+  }
+  if (translitBtn) {
+    translitBtn.addEventListener('click', async () => {
+      const val = rootInput.value;
+      if (!val.trim() || /[\u0900-\u097F]/.test(val)) return;
+      translitBtn.disabled = true;
+      if (showTableBtn) showTableBtn.disabled = true;
+      loader.style.display = 'inline-block';
+      translitBtn.textContent = '...';
+      try {
+        while (!window.aksharamukhaReady) await new Promise(r => setTimeout(r, 30));
+        const output = await window.aksharamukhaInstance.process('autodetect', 'Devanagari', val);
+        rootInput.value = output;
+      } catch (err) {
+        // Fallback: do nothing
+      }
+      loader.style.display = 'none';
+      translitBtn.disabled = false;
+      if (showTableBtn) showTableBtn.disabled = false;
+      translitBtn.textContent = 'लिप्यंतरण';
+    });
+  }
+});
 
   word = word.replace(/ /g, "_");
 
