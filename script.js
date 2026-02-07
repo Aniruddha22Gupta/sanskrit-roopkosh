@@ -222,7 +222,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       if (!tableDiv) {
         // Try prediction endpoint for shabd roop (noun/pronoun)
-        if (isShabd && document.getElementById("shabdType").value == "संज्ञा (Noun)") {
+        if (isShabd && document.getElementById("shabdType").value === "noun") {
           try {
             const predUrl = `https://sanskritabhyas.in/hi/Noun/Prediction/${word}`;
             const proxyPredUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(predUrl)}`;
