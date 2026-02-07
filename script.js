@@ -86,7 +86,6 @@ async function openTable() {
 
   // Loader logic
   let showTableBtn = document.querySelector('button.normal-button');
-  let translitBtn = document.getElementById('transliterateBtn');
   let loader = document.querySelector('.loader-aksharamukha');
   if (!loader) {
     loader = document.createElement('div');
@@ -98,7 +97,6 @@ async function openTable() {
   // Only transliterate if not already Devanagari
   if (!(/[\u0900-\u097F]/.test(word))) {
     if (showTableBtn) showTableBtn.disabled = true;
-    if (translitBtn) translitBtn.disabled = true;
     loader.style.display = 'inline-block';
     try {
       while (!window.aksharamukhaReady) await new Promise(r => setTimeout(r, 30));
@@ -110,12 +108,10 @@ async function openTable() {
     }
     loader.style.display = 'none';
     if (showTableBtn) showTableBtn.disabled = false;
-    if (translitBtn) translitBtn.disabled = false;
   }
 // Ensure transliterate button uses the same Aksharamukha instance
 window.addEventListener('DOMContentLoaded', () => {
   const rootInput = document.getElementById('rootWord');
-  const translitBtn = document.getElementById('transliterateBtn');
   const showTableBtn = document.querySelector('button.normal-button');
   let loader = document.querySelector('.loader-aksharamukha');
   if (!loader) {
@@ -124,20 +120,19 @@ window.addEventListener('DOMContentLoaded', () => {
     loader.style.display = 'none';
     if (showTableBtn) showTableBtn.parentNode.insertBefore(loader, showTableBtn.nextSibling);
   }
-  if (translitBtn) {
-    translitBtn.addEventListener('click', async () => {
+  if (showTableBtn) {
+    showTableBtn.addEventListener('click', async () => {
       const val = rootInput.value;
       if (!val.trim() || /[\u0900-\u097F]/.test(val)) return;
-      translitBtn.disabled = true;
+      showTableBtn.disabled = true;
       if (showTableBtn) showTableBtn.disabled = true;
       loader.style.display = 'inline-block';
-      translitBtn.textContent = '...';
       try {
         while (!window.aksharamukhaReady) await new Promise(r => setTimeout(r, 30));
         const output = await window.aksharamukhaInstance.process('autodetect', 'Devanagari', val);
         rootInput.value = output;
       } catch (err) {
-        // Fallback: do nothing
+        
       }
       loader.style.display = 'none';
       translitBtn.disabled = false;
@@ -227,7 +222,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       if (!tableDiv) {
         // Try prediction endpoint for shabd roop (noun/pronoun)
-        if (isShabd) {
+        if (isShabd && document.getElementById("shabdType").value == "संज्ञा (Noun)") {
           try {
             const predUrl = `https://sanskritabhyas.in/hi/Noun/Prediction/${word}`;
             const proxyPredUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(predUrl)}`;
